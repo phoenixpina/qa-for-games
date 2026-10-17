@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}QA For Games{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="top-bar">
+        <a class="brand" href="{{ url_for('dashboard') }}">QA For Games</a>
+
+        <nav class="navigation">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('projects') }}">Projects</a>
+            <a href="{{ url_for('test_cases') }}">Test Cases</a>
+            <a href="{{ url_for('defects') }}">Defects</a>
+            <a href="{{ url_for('reports') }}">Reports</a>
+        </nav>
+    </header>
+
+    <main class="page-container">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

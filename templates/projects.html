@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Projects - QA For Games{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <p class="eyebrow">Organize your testing work</p>
+    <h1>Projects</h1>
+    <p>Each project represents a video game being tested.</p>
+</section>
+
+<section class="content-card">
+    <div class="card-header">
+        <h2>Your Projects</h2>
+        <button class="button" type="button">Create Project</button>
+    </div>
+    <div class="empty-state">
+        <p>No projects have been created yet.</p>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Defects - QA For Games{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <p class="eyebrow">Track problems found during testing</p>
+    <h1>Defects</h1>
+    <p>Record, prioritize, and track problems discovered in a game.</p>
+</section>
+
+<section class="content-card">
+    <div class="card-header">
+        <h2>Defect Reports</h2>
+        <button class="button" type="button">Report Defect</button>
+    </div>
+    <div class="empty-state">
+        <p>No defects have been reported yet.</p>
+    </div>
+</section>
+{% endblock %}

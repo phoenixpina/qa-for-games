@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - QA For Games{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <p class="eyebrow">Understand testing progress</p>
+    <h1>Reports</h1>
+    <p>View basic statistics about test results and open defects.</p>
+</section>
+
+<section class="summary-grid">
+    <div class="summary-card">
+        <span>Pass Rate</span>
+        <strong>0%</strong>
+    </div>
+    <div class="summary-card">
+        <span>Passed</span>
+        <strong>0</strong>
+    </div>
+    <div class="summary-card">
+        <span>Failed</span>
+        <strong>0</strong>
+    </div>
+    <div class="summary-card">
+        <span>Blocked</span>
+        <strong>0</strong>
+    </div>
+</section>
+
+<section class="content-card">
+    <h2>Report Details</h2>
+    <p>Testing reports will appear here after test cases and results are added.</p>
+</section>
+{% endblock %}

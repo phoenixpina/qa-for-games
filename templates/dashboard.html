@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - QA For Games{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <p class="eyebrow">Video game quality assurance</p>
+    <h1>Dashboard</h1>
+    <p>View the current testing status for your game projects.</p>
+</section>
+
+<section class="summary-grid">
+    <div class="summary-card">
+        <span>Projects</span>
+        <strong>0</strong>
+    </div>
+    <div class="summary-card">
+        <span>Test Cases</span>
+        <strong>0</strong>
+    </div>
+    <div class="summary-card">
+        <span>Failed Tests</span>
+        <strong>0</strong>
+    </div>
+    <div class="summary-card">
+        <span>Open Defects</span>
+        <strong>0</strong>
+    </div>
+</section>
+
+<section class="content-card">
+    <h2>Getting started</h2>
+    <p>Create a project to begin organizing test suites, test cases, test results, and defects.</p>
+    <a class="button" href="{{ url_for('projects') }}">View Projects</a>
+</section>
+{% endblock %}
