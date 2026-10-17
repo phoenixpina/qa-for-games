@@ -6,16 +6,37 @@
 <section class="page-heading">
     <p class="eyebrow">Organize your testing work</p>
     <h1>Projects</h1>
-    <p>Each project represents a video game being tested.</p>
+    <p>Create and manage projects for the games you are testing.</p>
 </section>
 
 <section class="content-card">
-    <div class="card-header">
-        <h2>Your Projects</h2>
-        <button class="button" type="button">Create Project</button>
-    </div>
-    <div class="empty-state">
-        <p>No projects have been created yet.</p>
-    </div>
+    <h2>Create a Project</h2>
+
+    <form method="post">
+        <label for="name">Project name</label>
+        <input id="name" name="name" type="text" required>
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4"></textarea>
+
+        <button class="button" type="submit">Create Project</button>
+    </form>
+</section>
+
+<section class="content-card">
+    <h2>Saved Projects</h2>
+
+    {% if projects %}
+        {% for project in projects %}
+            <div class="project-item">
+                <h3>{{ project["name"] }}</h3>
+                <p>{{ project["description"] or "No description provided." }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <p>No projects have been created yet.</p>
+        </div>
+    {% endif %}
 </section>
 {% endblock %}

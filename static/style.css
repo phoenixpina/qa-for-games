@@ -166,3 +166,32 @@ body {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+form {
+    display: grid;
+    gap: 10px;
+    max-width: 600px;
+}
+
+form label {
+    font-weight: bold;
+}
+
+form input,
+form textarea {
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font: inherit;
+    padding: 10px;
+}
+
+.project-item {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-top: 12px;
+    padding: 16px;
+}
+
+.project-item h3 {
+    margin-top: 0;
+}

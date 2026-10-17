@@ -1,4 +1,6 @@
-from flask import Flask, render_template
+import sqlite3
+from flask import Flask, render_template, request, redirect, url_for
+from database import DATABASE, initialize_database
 
 app = Flask(__name__)
 
@@ -8,9 +10,31 @@ def dashboard():
     return render_template("dashboard.html")
 
 
-@app.route("/projects")
+@app.route("/projects", methods=["GET", "POST"])
 def projects():
-    return render_template("projects.html")
+    if request.method == "POST":
+        name = request.form["name"].strip()
+        description = request.form["description"].strip()
+
+        if name:
+            connection = sqlite3.connect(DATABASE)
+            connection.execute(
+                "INSERT INTO projects (name, description) VALUES (?, ?)",
+                (name, description)
+            )
+            connection.commit()
+            connection.close()
+
+        return redirect(url_for("projects"))
+
+    connection = sqlite3.connect(DATABASE)
+    connection.row_factory = sqlite3.Row
+    projects = connection.execute(
+        "SELECT id, name, description FROM projects ORDER BY id DESC"
+    ).fetchall()
+    connection.close()
+
+    return render_template("projects.html", projects=projects)
 
 
 @app.route("/test-cases")
@@ -29,4 +53,5 @@ def reports():
 
 
 if __name__ == "__main__":
+    initialize_database()
     app.run(debug=True)
