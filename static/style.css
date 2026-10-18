@@ -195,3 +195,14 @@ form textarea {
 .project-item h3 {
     margin-top: 0;
 }
+
+form select {
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font: inherit;
+    padding: 10px;
+}
+
+.preserved-text {
+    white-space: pre-line;
+}

@@ -6,16 +6,86 @@
 <section class="page-heading">
     <p class="eyebrow">Plan and execute tests</p>
     <h1>Test Cases</h1>
-    <p>Create test cases for game features and record their results.</p>
+    <p>Create test cases for the features of a video game.</p>
 </section>
 
 <section class="content-card">
-    <div class="card-header">
-        <h2>Test Case Library</h2>
-        <button class="button" type="button">Create Test Case</button>
-    </div>
-    <div class="empty-state">
-        <p>No test cases have been created yet.</p>
-    </div>
+    <h2>Create a Test Case</h2>
+
+    {% if projects %}
+        <form method="post">
+            <label for="project_id">Project</label>
+            <select id="project_id" name="project_id" required>
+                <option value="">Select a project</option>
+
+                {% for project in projects %}
+                    <option value="{{ project['id'] }}">
+                        {{ project['name'] }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="title">Test-case title</label>
+            <input
+                id="title"
+                name="title"
+                type="text"
+                placeholder="Player can jump"
+                required
+            >
+
+            <label for="steps">Testing steps</label>
+            <textarea
+                id="steps"
+                name="steps"
+                rows="5"
+                placeholder="1. Start the game&#10;2. Press the jump button"
+                required
+            ></textarea>
+
+            <label for="expected_result">Expected result</label>
+            <textarea
+                id="expected_result"
+                name="expected_result"
+                rows="4"
+                placeholder="The player jumps successfully."
+                required
+            ></textarea>
+
+            <button class="button" type="submit">
+                Create Test Case
+            </button>
+        </form>
+    {% else %}
+        <div class="empty-state">
+            <p>Create a project before creating a test case.</p>
+        </div>
+    {% endif %}
+</section>
+
+<section class="content-card">
+    <h2>Saved Test Cases</h2>
+
+    {% if test_cases %}
+        {% for test_case in test_cases %}
+            <div class="project-item">
+                <p class="eyebrow">{{ test_case['project_name'] }}</p>
+
+                <h3>{{ test_case['title'] }}</h3>
+
+                <p><strong>Testing steps:</strong></p>
+                <p class="preserved-text">{{ test_case['steps'] }}</p>
+
+                <p><strong>Expected result:</strong></p>
+                <p class="preserved-text">
+                    {{ test_case['expected_result'] }}
+                </p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <p>No test cases have been created yet.</p>
+        </div>
+    {% endif %}
 </section>
 {% endblock %}

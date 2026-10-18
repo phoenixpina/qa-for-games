@@ -10,10 +10,13 @@ def initialize_database():
 
     connection.execute(
         """
-        CREATE TABLE IF NOT EXISTS projects (
+        CREATE TABLE IF NOT EXISTS test_cases (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            description TEXT
+            project_id INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            steps TEXT NOT NULL,
+            expected_result TEXT NOT NULL,
+            FOREIGN KEY (project_id) REFERENCES projects (id)
         )
         """
     )

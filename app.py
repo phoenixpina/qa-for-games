@@ -37,9 +37,55 @@ def projects():
     return render_template("projects.html", projects=projects)
 
 
-@app.route("/test-cases")
+@app.route("/test-cases", methods=["GET", "POST"])
 def test_cases():
-    return render_template("test_cases.html")
+    if request.method == "POST":
+        project_id = request.form["project_id"]
+        title = request.form["title"].strip()
+        steps = request.form["steps"].strip()
+        expected_result = request.form["expected_result"].strip()
+
+        if title and steps and expected_result:
+            connection = sqlite3.connect(DATABASE)
+            connection.execute(
+                """
+                INSERT INTO test_cases
+                    (project_id, title, steps, expected_result)
+                VALUES (?, ?, ?, ?)
+                """,
+                (project_id, title, steps, expected_result)
+            )
+            connection.commit()
+            connection.close()
+
+        return redirect(url_for("test_cases"))
+
+    connection = sqlite3.connect(DATABASE)
+    connection.row_factory = sqlite3.Row
+
+    projects = connection.execute(
+        "SELECT id, name FROM projects ORDER BY name"
+    ).fetchall()
+
+    test_cases = connection.execute(
+        """
+        SELECT test_cases.title,
+               test_cases.steps,
+               test_cases.expected_result,
+               projects.name AS project_name
+        FROM test_cases
+        JOIN projects ON projects.id = test_cases.project_id
+        ORDER BY test_cases.id DESC
+        """
+    ).fetchall()
+
+    connection.close()
+
+    return render_template(
+        "test_cases.html",
+        projects=projects,
+        test_cases=test_cases
+    )
 
 
 @app.route("/defects")
