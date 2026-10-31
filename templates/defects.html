@@ -6,16 +6,99 @@
 <section class="page-heading">
     <p class="eyebrow">Track problems found during testing</p>
     <h1>Defects</h1>
-    <p>Record, prioritize, and track problems discovered in a game.</p>
+    <p>Create defects from failed test cases and track their status.</p>
 </section>
 
 <section class="content-card">
-    <div class="card-header">
-        <h2>Defect Reports</h2>
-        <button class="button" type="button">Report Defect</button>
-    </div>
-    <div class="empty-state">
-        <p>No defects have been reported yet.</p>
-    </div>
+    <h2>Report a Defect</h2>
+
+    {% if failed_tests %}
+        <form method="post">
+            <label for="test_case_id">Failed test case</label>
+            <select id="test_case_id" name="test_case_id" required>
+                <option value="">Select a failed test case</option>
+                {% for test_case in failed_tests %}
+                    <option value="{{ test_case['id'] }}">
+                        {{ test_case['project_name'] }} - {{ test_case['title'] }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="title">Defect title</label>
+            <input id="title" name="title" type="text" placeholder="Player cannot jump near the ledge" required>
+
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="3" required></textarea>
+
+            <label for="reproduction_steps">Reproduction steps</label>
+            <textarea id="reproduction_steps" name="reproduction_steps" rows="5" placeholder="1. Start the game&#10;2. Walk to the ledge&#10;3. Press the jump button" required></textarea>
+
+            <label for="expected_result">Expected result</label>
+            <textarea id="expected_result" name="expected_result" rows="3" required></textarea>
+
+            <label for="actual_result">Actual result</label>
+            <textarea id="actual_result" name="actual_result" rows="3" required></textarea>
+
+            <label for="severity">Severity</label>
+            <select id="severity" name="severity" required>
+                <option value="">Select severity</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical</option>
+            </select>
+
+            <label for="priority">Priority</label>
+            <select id="priority" name="priority" required>
+                <option value="">Select priority</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
+
+            <button class="button" type="submit">Create Defect</button>
+        </form>
+    {% else %}
+        <div class="empty-state">
+            <p>Record a Failed result for a test case before reporting a defect.</p>
+        </div>
+    {% endif %}
+</section>
+
+<section class="content-card">
+    <h2>Saved Defects</h2>
+
+    {% if defects %}
+        {% for defect in defects %}
+            <div class="project-item">
+                <p class="eyebrow">{{ defect['project_name'] }} - {{ defect['test_case_title'] }}</p>
+                <h3>{{ defect['title'] }}</h3>
+                <p>{{ defect['description'] }}</p>
+                <p><strong>Severity:</strong> {{ defect['severity'] }}</p>
+                <p><strong>Priority:</strong> {{ defect['priority'] }}</p>
+                <p><strong>Expected:</strong> {{ defect['expected_result'] }}</p>
+                <p><strong>Actual:</strong> {{ defect['actual_result'] }}</p>
+                <p><strong>Reproduction steps:</strong></p>
+                <p class="preserved-text">{{ defect['reproduction_steps'] }}</p>
+
+                <p><strong>Status:</strong> {{ defect['status'] }}</p>
+                <form method="post" action="{{ url_for('update_defect_status', defect_id=defect['id']) }}">
+                    <label for="status-{{ defect['id'] }}">Update status</label>
+                    <select id="status-{{ defect['id'] }}" name="status" required>
+                        {% for status in ['Open', 'In Progress', 'Fixed', 'Closed'] %}
+                            <option value="{{ status }}" {% if status == defect['status'] %}selected{% endif %}>
+                                {{ status }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <button class="button" type="submit">Update Status</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <p>No defects have been reported yet.</p>
+        </div>
+    {% endif %}
 </section>
 {% endblock %}

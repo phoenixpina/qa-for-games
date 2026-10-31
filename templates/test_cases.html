@@ -10,10 +10,10 @@
 </section>
 
 <section class="content-card">
-    <h2>Create a Test Case</h2>
+    <h2>Create a Test Suite</h2>
 
     {% if projects %}
-        <form method="post">
+        <form method="post" action="{{ url_for('create_suite') }}">
             <label for="project_id">Project</label>
             <select id="project_id" name="project_id" required>
                 <option value="">Select a project</option>
@@ -21,6 +21,48 @@
                 {% for project in projects %}
                     <option value="{{ project['id'] }}">
                         {{ project['name'] }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="suite-name">Suite name</label>
+            <input id="suite-name" name="name" type="text" placeholder="Player Controls" required>
+
+            <label for="suite-description">Description</label>
+            <textarea id="suite-description" name="description" rows="3" placeholder="Tests for player movement and controls"></textarea>
+
+            <button class="button" type="submit">Create Test Suite</button>
+        </form>
+    {% else %}
+        <div class="empty-state">
+            <p>Create a project before creating a test suite.</p>
+        </div>
+    {% endif %}
+</section>
+
+<section class="content-card">
+    <h2>Create a Test Case</h2>
+
+    {% if suites %}
+        <form method="post">
+            <label for="test-project-id">Project</label>
+            <select id="test-project-id" name="project_id" required>
+                <option value="">Select a project</option>
+
+                {% for project in projects %}
+                    <option value="{{ project['id'] }}">
+                        {{ project['name'] }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label for="suite_id">Test suite</label>
+            <select id="suite_id" name="suite_id" required>
+                <option value="">Select a test suite</option>
+
+                {% for suite in suites %}
+                    <option value="{{ suite['id'] }}">
+                        {{ suite['project_name'] }} - {{ suite['name'] }}
                     </option>
                 {% endfor %}
             </select>
@@ -58,7 +100,24 @@
         </form>
     {% else %}
         <div class="empty-state">
-            <p>Create a project before creating a test case.</p>
+            <p>Create a test suite before creating a test case.</p>
+        </div>
+    {% endif %}
+</section>
+
+<section class="content-card">
+    <h2>Test Suites</h2>
+
+    {% if suites %}
+        {% for suite in suites %}
+            <div class="project-item">
+                <p class="eyebrow">{{ suite['project_name'] }}</p>
+                <h3>{{ suite['name'] }}</h3>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <p>No test suites have been created yet.</p>
         </div>
     {% endif %}
 </section>
@@ -69,7 +128,10 @@
     {% if test_cases %}
         {% for test_case in test_cases %}
             <div class="project-item">
-                <p class="eyebrow">{{ test_case['project_name'] }}</p>
+                <p class="eyebrow">
+                    {{ test_case['project_name'] }} -
+                    {{ test_case['suite_name'] or 'Unassigned' }}
+                </p>
 
                 <h3>{{ test_case['title'] }}</h3>
 
@@ -80,6 +142,38 @@
                 <p class="preserved-text">
                     {{ test_case['expected_result'] }}
                 </p>
+
+                <h4>Record Test Result</h4>
+                <form method="post" action="{{ url_for('execute_test_case', test_case_id=test_case['id']) }}">
+                    <label for="result-{{ test_case['id'] }}">Result</label>
+                    <select id="result-{{ test_case['id'] }}" name="result" required>
+                        <option value="">Select a result</option>
+                        <option value="Passed">Passed</option>
+                        <option value="Failed">Failed</option>
+                        <option value="Blocked">Blocked</option>
+                    </select>
+
+                    <label for="notes-{{ test_case['id'] }}">Notes</label>
+                    <textarea id="notes-{{ test_case['id'] }}" name="notes" rows="3" placeholder="Optional notes about this test run"></textarea>
+
+                    <button class="button" type="submit">Save Result</button>
+                </form>
+
+                {% set executions = executions_by_test_case.get(test_case['id'], []) %}
+                {% if executions %}
+                    <h4>Execution History</h4>
+                    {% for execution in executions %}
+                        <div class="execution-item">
+                            <strong>{{ execution['result'] }}</strong>
+                            <span>{{ execution['executed_at'] }}</span>
+                            {% if execution['notes'] %}
+                                <p class="preserved-text">{{ execution['notes'] }}</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No execution results recorded yet.</p>
+                {% endif %}
             </div>
         {% endfor %}
     {% else %}
