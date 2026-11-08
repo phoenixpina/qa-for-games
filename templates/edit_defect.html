@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Edit Defect - QA For Games{% endblock %}
+{% block content %}
+<section class="page-heading"><h1>Edit Defect</h1></section>
+<section class="content-card">
+    <form method="post">
+        <label for="title">Defect title</label>
+        <input id="title" name="title" value="{{ defect['title'] }}" required>
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4" required>{{ defect['description'] }}</textarea>
+        <label for="reproduction_steps">Reproduction steps</label>
+        <textarea id="reproduction_steps" name="reproduction_steps" rows="6" required>{{ defect['reproduction_steps'] }}</textarea>
+        <label for="expected_result">Expected result</label>
+        <textarea id="expected_result" name="expected_result" rows="4" required>{{ defect['expected_result'] }}</textarea>
+        <label for="actual_result">Actual result</label>
+        <textarea id="actual_result" name="actual_result" rows="4" required>{{ defect['actual_result'] }}</textarea>
+        <label for="severity">Severity</label>
+        <select id="severity" name="severity" required>
+            {% for value in ['Low', 'Medium', 'High', 'Critical'] %}
+                <option value="{{ value }}" {% if value == defect['severity'] %}selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+        </select>
+        <label for="priority">Priority</label>
+        <select id="priority" name="priority" required>
+            {% for value in ['Low', 'Medium', 'High'] %}
+                <option value="{{ value }}" {% if value == defect['priority'] %}selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+        </select>
+        <label for="status">Status</label>
+        <select id="status" name="status" required>
+            {% for value in ['Open', 'In Progress', 'Fixed', 'Closed'] %}
+                <option value="{{ value }}" {% if value == defect['status'] %}selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+        </select>
+        <button class="button" type="submit">Save Changes</button>
+        <a class="button" href="{{ url_for('defects') }}">Cancel</a>
+    </form>
+</section>
+{% endblock %}

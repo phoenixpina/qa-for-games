@@ -19,7 +19,7 @@
                 <option value="">Select a failed test case</option>
                 {% for test_case in failed_tests %}
                     <option value="{{ test_case['id'] }}">
-                        {{ test_case['project_name'] }} - {{ test_case['title'] }}
+                        {{ test_case['project_name'] }} - {{ test_case['suite_name'] or 'Unassigned' }} - {{ test_case['title'] }}
                     </option>
                 {% endfor %}
             </select>
@@ -66,39 +66,40 @@
 </section>
 
 <section class="content-card">
-    <h2>Saved Defects</h2>
+    <h2>Defects by Test Suite</h2>
 
-    {% if defects %}
-        {% for defect in defects %}
-            <div class="project-item">
-                <p class="eyebrow">{{ defect['project_name'] }} - {{ defect['test_case_title'] }}</p>
-                <h3>{{ defect['title'] }}</h3>
-                <p>{{ defect['description'] }}</p>
-                <p><strong>Severity:</strong> {{ defect['severity'] }}</p>
-                <p><strong>Priority:</strong> {{ defect['priority'] }}</p>
-                <p><strong>Expected:</strong> {{ defect['expected_result'] }}</p>
-                <p><strong>Actual:</strong> {{ defect['actual_result'] }}</p>
-                <p><strong>Reproduction steps:</strong></p>
-                <p class="preserved-text">{{ defect['reproduction_steps'] }}</p>
-
-                <p><strong>Status:</strong> {{ defect['status'] }}</p>
-                <form method="post" action="{{ url_for('update_defect_status', defect_id=defect['id']) }}">
-                    <label for="status-{{ defect['id'] }}">Update status</label>
-                    <select id="status-{{ defect['id'] }}" name="status" required>
-                        {% for status in ['Open', 'In Progress', 'Fixed', 'Closed'] %}
-                            <option value="{{ status }}" {% if status == defect['status'] %}selected{% endif %}>
-                                {{ status }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                    <button class="button" type="submit">Update Status</button>
-                </form>
-            </div>
-        {% endfor %}
+    {% if defect_suites %}
+        <div class="suite-list">
+            {% for suite in defect_suites %}
+                <a class="suite-card" href="{{ url_for('defect_suite_detail', suite_id=suite['id']) }}">
+                    <p class="eyebrow">{{ suite['project_name'] }}</p>
+                    <h3>{{ suite['name'] }}</h3>
+                    <p>{{ suite['description'] or 'View defects reported from this suite.' }}</p>
+                    <span>{{ suite['defect_count'] }} defect{% if suite['defect_count'] != 1 %}s{% endif %} →</span>
+                </a>
+            {% endfor %}
+        </div>
     {% else %}
         <div class="empty-state">
             <p>No defects have been reported yet.</p>
         </div>
     {% endif %}
 </section>
+
+{% if unassigned_defects %}
+<section class="content-card">
+    <h2>Unassigned Defects</h2>
+    <p>These defects belong to test cases that are not attached to a suite.</p>
+    {% for defect in unassigned_defects %}
+        <div class="project-item">
+            <p class="eyebrow">{{ defect['project_name'] }} - {{ defect['test_case_title'] }}</p>
+            <h3>{{ defect['title'] }}</h3>
+            <a class="button" href="{{ url_for('edit_defect', defect_id=defect['id']) }}">Edit Defect</a>
+            <form method="post" action="{{ url_for('delete_defect', defect_id=defect['id']) }}" style="display: inline;">
+                <button class="button" type="submit" onclick="return confirm('Delete this defect?');">Delete Defect</button>
+            </form>
+        </div>
+    {% endfor %}
+</section>
+{% endif %}
 {% endblock %}

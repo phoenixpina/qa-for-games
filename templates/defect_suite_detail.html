@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ suite['name'] }} Defects - QA For Games{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <p class="eyebrow"><a href="{{ url_for('defects') }}">Defects</a> / {{ suite['project_name'] }}</p>
+    <h1>{{ suite['name'] }} Defects</h1>
+    <p>{{ suite['description'] or 'Defects reported from this test suite.' }}</p>
+</section>
+
+<section class="content-card">
+    <h2>Defects in {{ suite['name'] }}</h2>
+
+    {% if defects %}
+        {% for defect in defects %}
+            <div class="project-item">
+                <p class="eyebrow">Test case: {{ defect['test_case_title'] }}</p>
+                <h3>{{ defect['title'] }}</h3>
+                <p>
+                    <a class="button" href="{{ url_for('edit_defect', defect_id=defect['id']) }}">Edit Defect</a>
+                    <form method="post" action="{{ url_for('delete_defect', defect_id=defect['id']) }}" style="display: inline;">
+                        <button class="button" type="submit" onclick="return confirm('Delete this defect?');">Delete Defect</button>
+                    </form>
+                </p>
+                <p>{{ defect['description'] }}</p>
+                <p><strong>Severity:</strong> {{ defect['severity'] }}</p>
+                <p><strong>Priority:</strong> {{ defect['priority'] }}</p>
+                <p><strong>Expected:</strong> {{ defect['expected_result'] }}</p>
+                <p><strong>Actual:</strong> {{ defect['actual_result'] }}</p>
+                <p><strong>Reproduction steps:</strong></p>
+                <p class="preserved-text">{{ defect['reproduction_steps'] }}</p>
+                <p><strong>Status:</strong> {{ defect['status'] }}</p>
+
+                <form method="post" action="{{ url_for('update_defect_status', defect_id=defect['id']) }}">
+                    <label for="status-{{ defect['id'] }}">Update status</label>
+                    <select id="status-{{ defect['id'] }}" name="status" required>
+                        {% for status in ['Open', 'In Progress', 'Fixed', 'Closed'] %}
+                            <option value="{{ status }}" {% if status == defect['status'] %}selected{% endif %}>
+                                {{ status }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <button class="button" type="submit">Update Status</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <p>No defects have been reported in this suite.</p>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

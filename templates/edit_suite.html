@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Edit Suite - QA For Games{% endblock %}
+{% block content %}
+<section class="page-heading"><h1>Edit Test Suite</h1></section>
+<section class="content-card">
+    <form method="post">
+        <label for="name">Suite name</label>
+        <input id="name" name="name" value="{{ suite['name'] }}" required>
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4">{{ suite['description'] or '' }}</textarea>
+        <button class="button" type="submit">Save Changes</button>
+        <a class="button" href="{{ url_for('suite_detail', suite_id=suite['id']) }}">Cancel</a>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Edit Test Result - QA For Games{% endblock %}
+{% block content %}
+<section class="page-heading"><h1>Edit Test Result</h1></section>
+<section class="content-card">
+    <form method="post">
+        <label for="result">Result</label>
+        <select id="result" name="result" required>
+            {% for value in ['Passed', 'Failed', 'Blocked'] %}
+                <option value="{{ value }}" {% if value == execution['result'] %}selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+        </select>
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes" rows="5">{{ execution['notes'] or '' }}</textarea>
+        <button class="button" type="submit">Save Changes</button>
+        <a class="button" href="{{ url_for('test_cases') }}">Cancel</a>
+    </form>
+</section>
+{% endblock %}

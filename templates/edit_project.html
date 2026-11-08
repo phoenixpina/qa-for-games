@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Edit Project - QA For Games{% endblock %}
+{% block content %}
+<section class="page-heading"><h1>Edit Project</h1></section>
+<section class="content-card">
+    <form method="post">
+        <label for="name">Project name</label>
+        <input id="name" name="name" value="{{ project['name'] }}" required>
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4">{{ project['description'] or '' }}</textarea>
+        <button class="button" type="submit">Save Changes</button>
+        <a class="button" href="{{ url_for('projects') }}">Cancel</a>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Edit Test Case - QA For Games{% endblock %}
+{% block content %}
+<section class="page-heading"><h1>Edit Test Case</h1></section>
+<section class="content-card">
+    <form method="post">
+        <label for="title">Test-case title</label>
+        <input id="title" name="title" value="{{ test_case['title'] }}" required>
+        <label for="steps">Testing steps</label>
+        <textarea id="steps" name="steps" rows="6" required>{{ test_case['steps'] }}</textarea>
+        <label for="expected_result">Expected result</label>
+        <textarea id="expected_result" name="expected_result" rows="4" required>{{ test_case['expected_result'] }}</textarea>
+        <button class="button" type="submit">Save Changes</button>
+        {% if test_case['suite_id'] %}
+            <a class="button" href="{{ url_for('suite_detail', suite_id=test_case['suite_id']) }}">Cancel</a>
+        {% else %}
+            <a class="button" href="{{ url_for('test_cases') }}">Cancel</a>
+        {% endif %}
+    </form>
+</section>
+{% endblock %}
