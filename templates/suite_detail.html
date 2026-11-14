@@ -24,6 +24,14 @@
         <textarea id="steps" name="steps" rows="5" placeholder="1. Start the game&#10;2. Press the jump button" required></textarea>
         <label for="expected_result">Expected result</label>
         <textarea id="expected_result" name="expected_result" rows="4" placeholder="The player jumps successfully." required></textarea>
+        <label for="priority">Priority</label>
+        <select id="priority" name="priority" required>
+            <option value="">Select priority</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Critical">Critical</option>
+        </select>
         <button class="button" type="submit">Create Test Case</button>
     </form>
 </section>
@@ -32,8 +40,9 @@
     <h2>Test Cases in {{ suite['name'] }}</h2>
     {% if test_cases %}
         {% for test_case in test_cases %}
-            <div class="project-item">
+            <div class="project-item" id="test-case-{{ test_case['id'] }}">
                 <h3>{{ test_case['title'] }}</h3>
+                <p><strong>Priority:</strong> {{ test_case['priority'] }}</p>
                 <p>
                     <a class="button" href="{{ url_for('edit_test_case', test_case_id=test_case['id']) }}">Edit Test Case</a>
                     <form method="post" action="{{ url_for('delete_test_case', test_case_id=test_case['id']) }}" style="display: inline;">

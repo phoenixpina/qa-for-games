@@ -38,6 +38,8 @@ def initialize_database():
             title TEXT NOT NULL,
             steps TEXT NOT NULL,
             expected_result TEXT NOT NULL,
+            priority TEXT NOT NULL DEFAULT 'Medium'
+                CHECK (priority IN ('Low', 'Medium', 'High', 'Critical')),
             FOREIGN KEY (project_id) REFERENCES projects (id)
         )
         """
@@ -50,6 +52,15 @@ def initialize_database():
     if "suite_id" not in test_case_columns:
         connection.execute(
             "ALTER TABLE test_cases ADD COLUMN suite_id INTEGER"
+        )
+
+    if "priority" not in test_case_columns:
+        connection.execute(
+            """
+            ALTER TABLE test_cases
+            ADD COLUMN priority TEXT NOT NULL DEFAULT 'Medium'
+                CHECK (priority IN ('Low', 'Medium', 'High', 'Critical'))
+            """
         )
 
     connection.execute(

@@ -129,6 +129,7 @@ def test_cases():
         """
         SELECT test_cases.id,
                test_cases.title,
+               test_cases.priority,
                projects.name AS project_name
         FROM test_cases
         JOIN projects ON projects.id = test_cases.project_id
@@ -171,17 +172,21 @@ def suite_detail(suite_id):
         title = request.form.get("title", "").strip()
         steps = request.form.get("steps", "").strip()
         expected_result = request.form.get("expected_result", "").strip()
+        priority = request.form.get("priority")
 
-        if title and steps and expected_result:
+        if (
+            title and steps and expected_result
+            and priority in {"Low", "Medium", "High", "Critical"}
+        ):
             connection.execute(
                 """
                 INSERT INTO test_cases
-                    (project_id, suite_id, title, steps, expected_result)
-                SELECT project_id, ?, ?, ?, ?
+                    (project_id, suite_id, title, steps, expected_result, priority)
+                SELECT project_id, ?, ?, ?, ?, ?
                 FROM test_suites
                 WHERE id = ?
                 """,
-                (suite_id, title, steps, expected_result, suite_id)
+                (suite_id, title, steps, expected_result, priority, suite_id)
             )
             connection.commit()
 
@@ -190,7 +195,7 @@ def suite_detail(suite_id):
 
     test_cases = connection.execute(
         """
-        SELECT id, title, steps, expected_result
+        SELECT id, title, steps, expected_result, priority
         FROM test_cases
         WHERE suite_id = ?
         ORDER BY id DESC
@@ -310,14 +315,18 @@ def edit_test_case(test_case_id):
         title = request.form.get("title", "").strip()
         steps = request.form.get("steps", "").strip()
         expected_result = request.form.get("expected_result", "").strip()
-        if title and steps and expected_result:
+        priority = request.form.get("priority")
+        if (
+            title and steps and expected_result
+            and priority in {"Low", "Medium", "High", "Critical"}
+        ):
             connection.execute(
                 """
                 UPDATE test_cases
-                SET title = ?, steps = ?, expected_result = ?
+                SET title = ?, steps = ?, expected_result = ?, priority = ?
                 WHERE id = ?
                 """,
-                (title, steps, expected_result, test_case_id)
+                (title, steps, expected_result, priority, test_case_id)
             )
             connection.commit()
         suite = connection.execute(
@@ -330,7 +339,7 @@ def edit_test_case(test_case_id):
 
     test_case = connection.execute(
         """
-        SELECT id, title, steps, expected_result, suite_id
+        SELECT id, title, steps, expected_result, priority, suite_id
         FROM test_cases WHERE id = ?
         """,
         (test_case_id,)
@@ -410,6 +419,18 @@ def defects():
             and priority in allowed_priorities
         ):
             connection = sqlite3.connect(DATABASE)
+            failed_test = connection.execute(
+                """
+                SELECT 1
+                FROM test_executions
+                WHERE test_case_id = ? AND result = 'Failed'
+                LIMIT 1
+                """,
+                (test_case_id,)
+            ).fetchone()
+            if not failed_test:
+                connection.close()
+                return redirect(url_for("defects"))
             connection.execute(
                 """
                 INSERT INTO defects (
@@ -514,6 +535,8 @@ def defect_suite_detail(suite_id):
                defects.reproduction_steps, defects.expected_result,
                defects.actual_result, defects.severity, defects.priority,
                defects.status, defects.created_at,
+               test_cases.id AS test_case_id,
+               test_cases.suite_id AS suite_id,
                test_cases.title AS test_case_title
         FROM defects
         JOIN test_cases ON test_cases.id = defects.test_case_id

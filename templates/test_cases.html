@@ -57,6 +57,7 @@
         <div class="project-item">
             <p class="eyebrow">{{ test_case['project_name'] }}</p>
             <h3>{{ test_case['title'] }}</h3>
+            <p><strong>Priority:</strong> {{ test_case['priority'] }}</p>
             <a class="button" href="{{ url_for('edit_test_case', test_case_id=test_case['id']) }}">Edit Test Case</a>
             <form method="post" action="{{ url_for('delete_test_case', test_case_id=test_case['id']) }}" style="display: inline;">
                 <button class="button" type="submit" onclick="return confirm('Delete this test case, its results, and linked defects?');">Delete Test Case</button>

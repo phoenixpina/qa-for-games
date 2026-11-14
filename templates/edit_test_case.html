@@ -10,6 +10,12 @@
         <textarea id="steps" name="steps" rows="6" required>{{ test_case['steps'] }}</textarea>
         <label for="expected_result">Expected result</label>
         <textarea id="expected_result" name="expected_result" rows="4" required>{{ test_case['expected_result'] }}</textarea>
+        <label for="priority">Priority</label>
+        <select id="priority" name="priority" required>
+            {% for value in ['Low', 'Medium', 'High', 'Critical'] %}
+                <option value="{{ value }}" {% if value == test_case['priority'] %}selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+        </select>
         <button class="button" type="submit">Save Changes</button>
         {% if test_case['suite_id'] %}
             <a class="button" href="{{ url_for('suite_detail', suite_id=test_case['suite_id']) }}">Cancel</a>

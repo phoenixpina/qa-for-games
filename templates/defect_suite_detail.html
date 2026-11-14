@@ -15,7 +15,12 @@
     {% if defects %}
         {% for defect in defects %}
             <div class="project-item">
-                <p class="eyebrow">Test case: {{ defect['test_case_title'] }}</p>
+                <p class="eyebrow">
+                    Test case:
+                    <a href="{{ url_for('suite_detail', suite_id=defect['suite_id']) }}#test-case-{{ defect['test_case_id'] }}">
+                        {{ defect['test_case_title'] }}
+                    </a>
+                </p>
                 <h3>{{ defect['title'] }}</h3>
                 <p>
                     <a class="button" href="{{ url_for('edit_defect', defect_id=defect['id']) }}">Edit Defect</a>
